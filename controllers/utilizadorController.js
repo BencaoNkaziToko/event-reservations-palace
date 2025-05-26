@@ -1,16 +1,23 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const connection = require('../Database/database');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import mysql from 'mysql2';
+
+// Conexão com o banco de dados
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "dbeventos",
+});
 
 // Criar um novo utilizador
-exports.createUtilizador = async (req, res) => {
+export async function createUtilizador(req, res) {
     const { nome, nomeUtilizador, senha } = req.body;
 
     if (!nome || !nomeUtilizador || !senha) {
         return res.status(400).json({ error: "Todos os campos são obrigatórios" });
     }
 
-    // Criptografar a senha
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(senha, salt);
 
@@ -21,10 +28,10 @@ exports.createUtilizador = async (req, res) => {
         }
         res.status(201).json({ message: "Utilizador criado com sucesso!", id: result.insertId });
     });
-};
+}
 
 // Listar todos os utilizadores
-exports.getAllUtilizadores = async (req, res) => {
+export async function getAllUtilizadores(req, res) {
     const sql = "SELECT * FROM utilizador";
     connection.query(sql, (err, results) => {
         if (err) {
@@ -32,10 +39,10 @@ exports.getAllUtilizadores = async (req, res) => {
         }
         res.json(results);
     });
-};
+}
 
 // Buscar um utilizador pelo ID
-exports.getUtilizadorById = async (req, res) => {
+export async function getUtilizadorById(req, res) {
     const { id } = req.params;
     const sql = "SELECT * FROM utilizador WHERE ID = ?";
     
@@ -48,10 +55,10 @@ exports.getUtilizadorById = async (req, res) => {
         }
         res.json(result[0]);
     });
-};
+}
 
 // Atualizar um utilizador
-exports.updateUtilizador = async (req, res) => {
+export async function updateUtilizador(req, res) {
     const { id } = req.params;
     const { nome, nomeUtilizador, senha } = req.body;
 
@@ -59,7 +66,6 @@ exports.updateUtilizador = async (req, res) => {
         return res.status(400).json({ error: "Todos os campos são obrigatórios" });
     }
 
-    // Criptografar a nova senha
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(senha, salt);
 
@@ -73,10 +79,10 @@ exports.updateUtilizador = async (req, res) => {
         }
         res.json({ message: "Utilizador atualizado com sucesso!" });
     });
-};
+}
 
 // Deletar um utilizador
-exports.deleteUtilizador = async (req, res) => {
+export async function deleteUtilizador(req, res) {
     const { id } = req.params;
     const sql = "DELETE FROM utilizador WHERE ID = ?";
     
@@ -89,10 +95,10 @@ exports.deleteUtilizador = async (req, res) => {
         }
         res.json({ message: "Utilizador deletado com sucesso!" });
     });
-};
+}
 
 // Login de um utilizador
-exports.login = async (req, res) => {
+export async function login(req, res) {
     const { nomeUtilizador, senha } = req.body;
 
     if (!nomeUtilizador || !senha) {
@@ -108,17 +114,15 @@ exports.login = async (req, res) => {
             return res.status(404).json({ message: "Nome de utilizador não encontrado" });
         }
 
-        // Comparar a senha fornecida com a senha criptografada no banco de dados
         const isMatch = await bcrypt.compare(senha, result[0].senha);
         if (!isMatch) {
             return res.status(400).json({ message: "Senha incorreta" });
         }
 
-        // Gerar token JWT
         const token = jwt.sign(
             { id: result[0].ID, nomeUtilizador: result[0].nomeUtilizador },
-            'secrettoken',  // Substitua por uma chave secreta de sua escolha
-            { expiresIn: '1h' }  // Token expira em 1 hora
+            'secrettoken',
+            { expiresIn: '1h' }
         );
 
         res.json({
@@ -126,4 +130,4 @@ exports.login = async (req, res) => {
             token: token
         });
     });
-};
+}

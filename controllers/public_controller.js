@@ -1,6 +1,10 @@
-// controllers/public_controller.js
-import connection from '../Database/database.js';
-
+import mysql from 'mysql2';
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "dbeventos",
+});
 export const homeController = {
   home: async (req, res) => {
     const sql = "SELECT * FROM pacote";

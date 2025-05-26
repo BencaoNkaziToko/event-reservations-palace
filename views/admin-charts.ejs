@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Gráficos e Relatórios - Admin</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+
+    <!-- Fonts and icons -->
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["../assets/css/fonts.min.css"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
+    <link rel="stylesheet" href="../assets/css/demo.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <div class="sidebar" data-background-color="dark">
+        <div class="sidebar-logo">
+          <!-- Logo Header -->
+          <div class="logo-header" data-background-color="dark">
+            <a href="index.html" class="logo text-light">
+              <img src="img/logo.png" alt="navbar brand" class="navbar-brand" height="60" width="60" />
+              -Dashboard
+            </a>
+            <div class="nav-toggle">
+              <button class="btn btn-toggle toggle-sidebar">
+                <i class="gg-menu-right"></i>
+              </button>
+              <button class="btn btn-toggle sidenav-toggler">
+                <i class="gg-menu-left"></i>
+              </button>
+            </div>
+            <button class="topbar-toggler more">
+              <i class="gg-more-vertical-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div class="sidebar-wrapper">
+          <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+              <li class="nav-item">
+                <a href="/admin">
+                  <i class="fas fa-home"></i>
+                  <p>Início</p>
+                </a>
+              </li>
+              <li class="nav-section">
+                <span class="sidebar-mini-icon">
+                  <i class="fa fa-ellipsis-h"></i>
+                </span>
+                <h4 class="text-section">Gerenciamento</h4>
+              </li>
+              <li class="nav-item">
+                <a href="/admin-reservations">
+                  <i class="fas fa-check-circle"></i>
+                  <p>Reservas</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/admin-items">
+                  <i class="fas fa-utensils"></i>
+                  <p>Cardápio</p>
+                </a>
+              </li>
+              <li class="nav-item active">
+                <a href="/admin-charts">
+                  <i class="far fa-chart-bar"></i>
+                  <p>Gráficos</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-panel">
+        <div class="container">
+          <div class="page-inner">
+            <div class="page-header">
+              <h3 class="fw-bold mb-3">Gráficos e Relatórios</h3>
+              <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                  <a href="/admin">
+                    <i class="icon-home"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Filtros de Período -->
+            <div class="row mb-4">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-period="day">Diário</button>
+                        <button type="button" class="btn btn-outline-primary" data-period="week">Semanal</button>
+                        <button type="button" class="btn btn-outline-primary" data-period="month">Mensal</button>
+                        <button type="button" class="btn btn-outline-primary" data-period="year">Anual</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gráficos de Reservas -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Reservas por Status</h4>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="reservasStatusChart"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Reservas por Período</h4>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="reservasPeriodoChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gráficos de Finanças -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Receita por Período</h4>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="receitaChart"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Média de Valor por Reserva</h4>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="mediaValorChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gráficos de Pacotes -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Pacotes Mais Populares</h4>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="pacotesPopularesChart"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Receita por Pacote</h4>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="receitaPacotesChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gráficos de Horários -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Horários Mais Populares</h4>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="horariosPopularesChart"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Distribuição de Horários</h4>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="distribuicaoHorariosChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core JS Files -->
+    <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../assets/js/plugin/chart.js/chart.min.js"></script>
+    <script src="../assets/js/kaiadmin.min.js"></script>
+
+    <script>
+      // Configuração global do Chart.js
+      Chart.defaults.responsive = true;
+      Chart.defaults.maintainAspectRatio = false;
+
+      // Objeto para armazenar as instâncias dos gráficos
+      const charts = {};
+
+      // Função para destruir gráficos existentes
+      function destroyCharts() {
+        Object.values(charts).forEach(chart => {
+          if (chart) {
+            chart.destroy();
+          }
+        });
+      }
+
+      // Função para atualizar os gráficos
+      async function atualizarGraficos(periodo = 'month') {
+        try {
+          console.log('Atualizando gráficos...');
+          destroyCharts();
+
+          const response = await fetch(`/api/charts?periodo=${periodo}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log('Dados recebidos:', data);
+
+          // Verificar se todos os canvas existem
+          const canvasIds = [
+            'reservasStatusChart',
+            'reservasPeriodoChart',
+            'receitaChart',
+            'pacotesPopularesChart',
+            'horariosPopularesChart',
+            'receitaPacotesChart',
+            'mediaValorChart',
+            'distribuicaoHorariosChart'
+          ];
+
+          canvasIds.forEach(id => {
+            const canvas = document.getElementById(id);
+            if (!canvas) {
+              console.error(`Canvas não encontrado: ${id}`);
+            }
+          });
+
+          // Gráfico de Status das Reservas
+          const statusCtx = document.getElementById('reservasStatusChart')?.getContext('2d');
+          if (statusCtx) {
+            charts.status = new Chart(statusCtx, {
+              type: 'pie',
+              data: {
+                labels: ['Pendentes', 'Confirmadas', 'Canceladas'],
+                datasets: [{
+                  data: [
+                    data.reservasStatus.pendentes,
+                    data.reservasStatus.confirmadas,
+                    data.reservasStatus.canceladas
+                  ],
+                  backgroundColor: ['#ffc107', '#28a745', '#dc3545']
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top'
+                  }
+                }
+              }
+            });
+          }
+
+          // Gráfico de Reservas por Período
+          const periodoCtx = document.getElementById('reservasPeriodoChart')?.getContext('2d');
+          if (periodoCtx) {
+            charts.periodo = new Chart(periodoCtx, {
+              type: 'line',
+              data: {
+                labels: data.reservasPeriodo.labels,
+                datasets: [{
+                  label: 'Número de Reservas',
+                  data: data.reservasPeriodo.valores,
+                  borderColor: '#2196f3',
+                  tension: 0.1
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top'
+                  }
+                }
+              }
+            });
+          }
+
+          // Gráfico de Receita
+          const receitaCtx = document.getElementById('receitaChart')?.getContext('2d');
+          if (receitaCtx) {
+            charts.receita = new Chart(receitaCtx, {
+              type: 'line',
+              data: {
+                labels: data.receita.labels,
+                datasets: [{
+                  label: 'Receita (Kz)',
+                  data: data.receita.valores,
+                  borderColor: '#4caf50',
+                  tension: 0.1
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top'
+                  }
+                }
+              }
+            });
+          }
+
+          // Gráfico de Pacotes Populares
+          const pacotesCtx = document.getElementById('pacotesPopularesChart')?.getContext('2d');
+          if (pacotesCtx) {
+            charts.pacotes = new Chart(pacotesCtx, {
+              type: 'bar',
+              data: {
+                labels: data.pacotesPopulares.labels,
+                datasets: [{
+                  label: 'Número de Reservas',
+                  data: data.pacotesPopulares.valores,
+                  backgroundColor: '#2196f3'
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top'
+                  }
+                }
+              }
+            });
+          }
+
+          // Gráfico de Horários Populares
+          const horariosCtx = document.getElementById('horariosPopularesChart')?.getContext('2d');
+          if (horariosCtx) {
+            charts.horarios = new Chart(horariosCtx, {
+              type: 'bar',
+              data: {
+                labels: data.horariosPopulares.labels,
+                datasets: [{
+                  label: 'Número de Reservas',
+                  data: data.horariosPopulares.valores,
+                  backgroundColor: '#ff9800'
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top'
+                  }
+                }
+              }
+            });
+          }
+
+          // Gráfico de Receita por Pacote
+          const receitaPacotesCtx = document.getElementById('receitaPacotesChart')?.getContext('2d');
+          if (receitaPacotesCtx) {
+            charts.receitaPacotes = new Chart(receitaPacotesCtx, {
+              type: 'bar',
+              data: {
+                labels: data.receitaPacotes.labels,
+                datasets: [{
+                  label: 'Receita (Kz)',
+                  data: data.receitaPacotes.valores,
+                  backgroundColor: '#4caf50'
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top'
+                  }
+                }
+              }
+            });
+          }
+
+          // Gráfico de Média de Valor por Reserva
+          const mediaValorCtx = document.getElementById('mediaValorChart')?.getContext('2d');
+          if (mediaValorCtx) {
+            charts.mediaValor = new Chart(mediaValorCtx, {
+              type: 'line',
+              data: {
+                labels: data.mediaValor.labels,
+                datasets: [{
+                  label: 'Média (Kz)',
+                  data: data.mediaValor.valores,
+                  borderColor: '#9c27b0',
+                  tension: 0.1
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top'
+                  }
+                }
+              }
+            });
+          }
+
+          // Gráfico de Distribuição de Horários
+          const distribuicaoHorariosCtx = document.getElementById('distribuicaoHorariosChart')?.getContext('2d');
+          if (distribuicaoHorariosCtx) {
+            charts.distribuicaoHorarios = new Chart(distribuicaoHorariosCtx, {
+              type: 'doughnut',
+              data: {
+                labels: data.distribuicaoHorarios.labels,
+                datasets: [{
+                  data: data.distribuicaoHorarios.valores,
+                  backgroundColor: [
+                    '#2196f3',
+                    '#4caf50',
+                    '#ff9800'
+                  ]
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top'
+                  }
+                }
+              }
+            });
+          }
+
+        } catch (error) {
+          console.error('Erro ao atualizar gráficos:', error);
+          alert('Erro ao carregar os gráficos. Por favor, verifique o console para mais detalhes.');
+        }
+      }
+
+      // Event Listeners
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM carregado, inicializando gráficos...');
+        
+        // Inicializar gráficos
+        atualizarGraficos('month');
+
+        // Event listeners para os botões de período
+        document.querySelectorAll('[data-period]').forEach(button => {
+          button.addEventListener('click', function() {
+            // Atualizar classes dos botões
+            document.querySelectorAll('[data-period]').forEach(btn => {
+              btn.classList.remove('btn-primary');
+              btn.classList.add('btn-outline-primary');
+            });
+            this.classList.remove('btn-outline-primary');
+            this.classList.add('btn-primary');
+
+            // Atualizar gráficos
+            const periodo = this.dataset.period;
+            atualizarGraficos(periodo);
+          });
+        });
+      });
+    </script>
+  </body>
+</html> 

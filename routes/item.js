@@ -1,22 +1,24 @@
-// routes/item.js
 import express from 'express';
+import {
+    createItem,
+    getAllItens,
+    getItemById,
+    updateItem,
+    deleteItem,
+    getItensByTipo
+} from '../controllers/itemController.js';
+
 const router = express.Router();
 
-import * as itemController from '../controllers/itemController.js';
+// Rota para a página de administração de itens
+router.get('/admin-items', getAllItens);
 
-// Criar um novo item (POST)
-router.post('/items', itemController.createItem);
-
-// Listar todos os itens (GET)
-router.get('/items', itemController.getAllItems);
-
-// Buscar um item pelo ID (GET)
-router.get('/items/:id', itemController.getItemById);
-
-// Atualizar um item (PUT)
-router.put('/items/:id', itemController.updateItem);
-
-// Deletar um item (DELETE)
-router.delete('/items/:id', itemController.deleteItem);
+// Rotas da API
+router.post('/itens', createItem);
+router.get('/itens', getAllItens);
+router.get('/itens/:id', getItemById);
+router.put('/itens/:id', updateItem);
+router.delete('/itens/:id', deleteItem);
+router.get('/itens/tipo/:tipo', getItensByTipo);
 
 export default router;

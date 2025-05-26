@@ -6,7 +6,7 @@ const eventoController = require('../controllers/eventoController');
 
 // Criar evento
 router.post('/eventos', eventoController.createEvento);
-
+router.post('/admin-eventos', eventoController.adminCreateEvento)
 // Listar todos os eventos
 router.get('/eventos', eventoController.getAllEventos);
 
@@ -30,5 +30,8 @@ router.get('/eventos/horarios/menos-solicitados', eventoController.getHorariosMe
 
 router.get('/eventos/arrecadacao/:ano', eventoController.getTotalArrecadadoPorMesEAno);
 router.get('/eventos/arrecadacao/ano/:ano', eventoController.getTotalArrecadadoPorAno);
+
+// Listar todos os eventos em JSON para atualização dinâmica
+router.get('/eventos-json', eventoController.getAllEventosJson);
 
 module.exports = router;

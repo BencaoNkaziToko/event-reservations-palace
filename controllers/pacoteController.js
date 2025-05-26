@@ -1,6 +1,10 @@
-// controllers/pacoteController.js
-import connection from '../Database/database.js';
-
+import mysql from 'mysql2';
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "dbeventos",
+});
 // Create a new package    
 export const createPacote = async (req, res) => {
   const { nome, descricao, preco } = req.body;

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Gerenciamento de Itens - Cardápio</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+
+    <!-- Fonts and icons -->
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["../assets/css/fonts.min.css"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
+    <link rel="stylesheet" href="../assets/css/demo.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <div class="sidebar" data-background-color="dark">
+        <div class="sidebar-logo">
+          <!-- Logo Header -->
+          <div class="logo-header" data-background-color="dark">
+            <a href="index.html" class="logo text-light">
+              <img src="img/logo.png" alt="navbar brand" class="navbar-brand" height="60" width="60" />
+              -Dashboard
+            </a>
+            <div class="nav-toggle">
+              <button class="btn btn-toggle toggle-sidebar">
+                <i class="gg-menu-right"></i>
+              </button>
+              <button class="btn btn-toggle sidenav-toggler">
+                <i class="gg-menu-left"></i>
+              </button>
+            </div>
+            <button class="topbar-toggler more">
+              <i class="gg-more-vertical-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div class="sidebar-wrapper">
+          <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+              <li class="nav-item active">
+                <a data-bs-toggle="" href="#dashboard" class="" aria-expanded="">
+                  <i class="fas fa-home"></i>
+                  <p>Início</p>
+                </a>
+              </li>
+              <li class="nav-section">
+                <span class="sidebar-mini-icon">
+                  <i class="fa fa-ellipsis-h"></i>
+                </span>
+                <h4 class="text-section">Gerenciamento</h4>
+              </li>
+              <li class="nav-item">
+                <a href="/admin-reservations">
+                  <i class="fas fa-check-circle"></i>
+                  <p>Reservas</p>
+                </a>
+              </li>
+              <li class="nav-item active">
+                <a href="/admin-items">
+                  <i class="fas fa-utensils"></i>
+                  <p>Cardápio</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-panel">
+        <div class="container">
+          <div class="page-inner">
+            <div class="page-header">
+              <h3 class="fw-bold mb-3">Gerenciamento de Itens</h3>
+              <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                  <a href="/admin">
+                    <i class="icon-home"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="d-flex align-items-center">
+                      <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal" data-bs-target="#addRowModal">
+                        <i class="fa fa-plus"></i>
+                        Adicionar Item
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <!-- Modal de Adição -->
+                    <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            <form id="add-item-form" class="container py-5">
+                              <div class="text-center">
+                                <small class="d-inline-block fw-bold text-dark text-uppercase bg-light border border-primary rounded-pill px-4 py-2 mb-4 fs-5">
+                                  Novo Item
+                                </small>
+                              </div>
+                              <div class="row g-4">
+                                <div class="col-12">
+                                  <input type="text" name="nome" class="form-control form-control-lg border-primary" placeholder="Nome do item" required>
+                                </div>
+                                <div class="col-12">
+                                  <input type="number" name="preco" class="form-control form-control-lg border-primary" placeholder="Preço" step="0.01" required>
+                                </div>
+                                <div class="col-12">
+                                  <select name="tipo" class="form-select form-select-lg border-primary" required>
+                                    <option value="" selected disabled>Selecione o tipo</option>
+                                    <option value="Nacional">Nacional</option>
+                                    <option value="Internacional">Internacional</option>
+                                    <option value="Outro">Outro</option>
+                                  </select>
+                                </div>
+                                <div class="col-12 text-center">
+                                  <button type="submit" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">
+                                    Adicionar
+                                  </button>
+                                </div>
+                              </div>
+                              <div id="add-error-messages" class="text-danger mt-4 fs-5 text-center"></div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Modal de Edição -->
+                    <div class="modal fade" id="editRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            <form id="edit-item-form" class="container py-5">
+                              <input type="hidden" name="id" id="edit-id">
+                              <div class="text-center">
+                                <small class="d-inline-block fw-bold text-dark text-uppercase bg-light border border-primary rounded-pill px-4 py-2 mb-4 fs-5">
+                                  Editar Item
+                                </small>
+                              </div>
+                              <div class="row g-4">
+                                <div class="col-12">
+                                  <input type="text" name="nome" id="edit-nome" class="form-control form-control-lg border-primary" placeholder="Nome do item" required>
+                                </div>
+                                <div class="col-12">
+                                  <input type="number" name="preco" id="edit-preco" class="form-control form-control-lg border-primary" placeholder="Preço" step="0.01" required>
+                                </div>
+                                <div class="col-12">
+                                  <select name="tipo" id="edit-tipo" class="form-select form-select-lg border-primary" required>
+                                    <option value="Nacional">Nacional</option>
+                                    <option value="Internacional">Internacional</option>
+                                    <option value="Outro">Outro</option>
+                                  </select>
+                                </div>
+                                <div class="col-12 text-center">
+                                  <button type="submit" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">
+                                    Salvar Alterações
+                                  </button>
+                                </div>
+                              </div>
+                              <div id="edit-error-messages" class="text-danger mt-4 fs-5 text-center"></div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="table-responsive">
+                      <table id="add-row" class="display table table-striped table-hover">
+                        <thead>
+                          <tr>
+                            <th>Nome</th>
+                            <th>Preço</th>
+                            <th>Tipo</th>
+                            <th style="width: 10%">Ação</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (itens && itens.length > 0) { %>
+                            <% itens.forEach(function(item) { %>
+                              <tr>
+                                <td><%= item.nome %></td>
+                                <td>Kz <%= item.preco.toFixed(2) %></td>
+                                <td><%= item.tipo %></td>
+                                <td>
+                                  <div class="form-button-action">
+                                    <button type="button" class="btn btn-link btn-primary btn-lg btn-edit-item" data-id="<%= item.ID %>">
+                                      <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-link btn-danger btn-delete-item" data-id="<%= item.ID %>">
+                                      <i class="fa fa-times"></i>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            <% }); %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="4" class="text-center">Nenhum item encontrado!</td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core JS Files -->
+    <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="../assets/js/kaiadmin.min.js"></script>
+
+    <script>
+      $(document).ready(function() {
+        $("#add-row").DataTable({
+          pageLength: 5,
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/pt-BR.json'
+          }
+        });
+
+        // Atualizar a tabela ao carregar a página
+        atualizarTabelaItens();
+      });
+
+      // Função para atualizar a tabela
+      async function atualizarTabelaItens() {
+        const tbody = document.querySelector('#add-row tbody');
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center">Carregando...</td></tr>';
+        try {
+          const res = await fetch('/itens', {
+            headers: {
+              'Accept': 'application/json'
+            }
+          });
+          const itens = await res.json();
+          if (!Array.isArray(itens) || itens.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhum item encontrado!</td></tr>';
+            return;
+          }
+          tbody.innerHTML = '';
+          itens.forEach(item => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${item.nome || ''}</td>
+                <td>Kz ${parseFloat(item.preco).toFixed(2)}</td>
+                <td>${item.tipo || ''}</td>
+                <td>
+                  <div class="form-button-action">
+                    <button type="button" class="btn btn-link btn-primary btn-lg btn-edit-item" data-id="${item.ID}">
+                      <i class="fa fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn btn-link btn-danger btn-delete-item" data-id="${item.ID}">
+                      <i class="fa fa-times"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          });
+        } catch (e) {
+          console.error('Erro ao carregar itens:', e);
+          tbody.innerHTML = '<tr><td colspan="4" class="text-center">Erro ao carregar itens!</td></tr>';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        // Adicionar novo item
+        document.getElementById('add-item-form').addEventListener('submit', async function(event) {
+          event.preventDefault();
+          const formData = {
+            nome: this.nome.value.trim(),
+            preco: parseFloat(this.preco.value),
+            tipo: this.tipo.value
+          };
+
+          try {
+            const response = await fetch('/itens', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(data.error || 'Erro ao adicionar item');
+            }
+
+            // Fechar modal e limpar formulário
+            const modalEl = document.getElementById('addRowModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+            this.reset();
+
+            // Atualizar tabela
+            atualizarTabelaItens();
+          } catch (error) {
+            document.getElementById('add-error-messages').innerHTML = `<strong style="color:red;">Erro: </strong>${error.message}`;
+          }
+        });
+
+        // Editar item
+        document.querySelector('#add-row tbody').addEventListener('click', async function(e) {
+          if (e.target.closest('.btn-edit-item')) {
+            const id = e.target.closest('.btn-edit-item').dataset.id;
+            try {
+              const response = await fetch(`/itens/${id}`);
+              const item = await response.json();
+              
+              document.getElementById('edit-id').value = item.ID;
+              document.getElementById('edit-nome').value = item.nome;
+              document.getElementById('edit-preco').value = item.preco;
+              document.getElementById('edit-tipo').value = item.tipo;
+
+              const editModal = new bootstrap.Modal(document.getElementById('editRowModal'));
+              editModal.show();
+            } catch (error) {
+              alert('Erro ao carregar dados do item: ' + error.message);
+            }
+          }
+        });
+
+        // Submeter edição
+        document.getElementById('edit-item-form').addEventListener('submit', async function(event) {
+          event.preventDefault();
+          const id = document.getElementById('edit-id').value;
+          const formData = {
+            nome: this.nome.value.trim(),
+            preco: parseFloat(this.preco.value),
+            tipo: this.tipo.value
+          };
+
+          try {
+            const response = await fetch(`/itens/${id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(data.error || 'Erro ao atualizar item');
+            }
+
+            // Fechar modal
+            const modalEl = document.getElementById('editRowModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+
+            // Atualizar tabela
+            atualizarTabelaItens();
+          } catch (error) {
+            document.getElementById('edit-error-messages').innerHTML = `<strong style="color:red;">Erro: </strong>${error.message}`;
+          }
+        });
+
+        // Excluir item
+        document.querySelector('#add-row tbody').addEventListener('click', async function(e) {
+          if (e.target.closest('.btn-delete-item')) {
+            const id = e.target.closest('.btn-delete-item').dataset.id;
+            if (confirm('Tem certeza que deseja excluir este item?')) {
+              try {
+                const response = await fetch(`/itens/${id}`, {
+                  method: 'DELETE',
+                  headers: { 'Accept': 'application/json' }
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                  throw new Error(data.error || 'Erro ao excluir item');
+                }
+
+                atualizarTabelaItens();
+              } catch (error) {
+                alert('Erro ao excluir item: ' + error.message);
+              }
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html> 

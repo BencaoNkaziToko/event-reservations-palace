@@ -4,10 +4,10 @@ import dotenv from'dotenv';
 dotenv.config();
 
 const connection = mysql.createConnection({
-    host: "bkq9ne3sbfgmp2xka7hw-mysql.services.clever-cloud.com",
-    user: "umuikl0mx6dacnou",
-    password: "Zro2DPE0eqV2CJ4UQAVE",
-    database: "bkq9ne3sbfgmp2xka7hw",
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "dbeventos",
 });
 
 const remetente = nodemailer.createTransport({
@@ -21,20 +21,16 @@ const remetente = nodemailer.createTransport({
     }
 })
 
-// aqui vai o codigo do envio de email
-
 
 // Função para criar o evento
 export const createEvento = async (req, res) => {
   try {
-    const { descricao, dataRealizacao, horario, solicitante, dataSolicitacao, telefone, email, status, idPacote } = req.body;
+    const { descricao, dataRealizacao, horario, solicitante, telefone, email, idPacote } = req.body;
     console.log(req.body);
-
-    // Verificação dos campos obrigatórios
-    if (!descricao || !dataRealizacao || !solicitante || !dataSolicitacao || !telefone || !status) {
-      return res.status(400).json({ error: "Campos obrigatórios estão faltando." });
-    }
-
+    
+    const newDataSolicitacao = new Date().toISOString().split('T')[0]; // Data atual
+    const status = "Pendente"; // Status padrão para novos eventos                  
+   
     // Tratamento do campo idPacote: transforma string vazia ou nula em null
     const pacoteValue = idPacote && idPacote.trim() !== '' ? idPacote : null;
 
@@ -42,14 +38,13 @@ export const createEvento = async (req, res) => {
       (descricao, dataRealizacao, horario, solicitante, dataSolicitacao, telefone, email, status, idPacote) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-    connection.query(sql, [descricao, dataRealizacao, horario || null, solicitante, dataSolicitacao, telefone, email || null, status, pacoteValue], async (err, result) => {
+    connection.query(sql, [descricao, dataRealizacao, horario || null, solicitante, newDataSolicitacao, telefone, email, status, pacoteValue], async (err, result) => {
       if (err) {
         console.error("Erro ao criar evento:", err);
         return res.status(500).json({ error: "Erro ao criar evento", details: err });
       }
       
-      res.json({ success: true, message: "Evento criado com sucesso!", id: result.insertId });
-        const mailOptions = {
+      const mailOptions = {
             from: `Palacio das Estrelas <bartolomew.sebas@gmail.com>`,
             to: email,
             subject: "Notificação",
@@ -70,15 +65,44 @@ export const createEvento = async (req, res) => {
   }
 };
 
+export const adminCreateEvento = async (req, res) => {
+  try {
+    const { descricao, dataRealizacao, horario, solicitante, telefone, email, idPacote } = req.body;
+    const newDataSolicitacao = new Date().toISOString().split('T')[0];
+    const status = "Pendente";
+    const pacoteValue = idPacote && idPacote.trim() !== '' ? idPacote : null;
+
+    const sql = `INSERT INTO evento 
+      (descricao, dataRealizacao, horario, solicitante, dataSolicitacao, telefone, email, status, idPacote) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    connection.query(sql, [descricao, dataRealizacao, horario || null, solicitante, newDataSolicitacao, telefone, email, status, pacoteValue], (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Erro ao criar evento", details: err });
+      }
+      // Retorne o ID do evento criado
+      res.json({ id: result.insertId, message: "Evento criado com sucesso!" });
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Erro interno do servidor." });
+  }
+};
 
 // Listar todos os eventos
 export const getAllEventos = async (req, res) => {
     const sql = "SELECT * FROM evento LEFT JOIN pacote ON evento.idPacote = pacote.id";
-    connection.query(sql, (err, results) => {
+    const sql2 = "SELECT * FROM pacote"
+    connection.query(sql, (err, eventos) => {
         if (err) {
             return res.status(500).json({ error: "Erro ao buscar eventos", details: err });
         }
-        res.json(results);
+        connection.query(sql2, (err, pacotes) => {
+            if (err) {
+                return res.status(500).json({ error: "Erro ao buscar pacotes", details: err });
+            }
+            console.log(eventos)
+            res.render('admin-reservations', {eventos, pacotes})
+        });
     });
 };
 
@@ -277,6 +301,16 @@ export const getTotalArrecadadoPorAno = async (req, res) => {
         }
 
         res.json(results[0]);  // Como só esperamos um único ano, retornamos o primeiro resultado
+    });
+};
+
+export const getAllEventosJson = async (req, res) => {
+    const sql = "SELECT evento.*, pacote.nome, pacote.preco, pacote.descricao as pacoteDescricao FROM evento LEFT JOIN pacote ON evento.idPacote = pacote.id";
+    connection.query(sql, (err, eventos) => {
+        if (err) {
+            return res.status(500).json({ error: "Erro ao buscar eventos", details: err });
+        }
+        res.json(eventos);
     });
 };
 

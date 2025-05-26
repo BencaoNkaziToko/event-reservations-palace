@@ -10,12 +10,12 @@ import { fileURLToPath } from "url";
 import publicRoutes from "./routes/public_routes.js";
 import itemRoutes from "./routes/item.js";
 import pacote_routes from "./routes/pacote_router.js";
-import funcaoRoutes from "./routes/funcao_router.js";
 import utilizadorRoutes from "./routes/utilizador_route.js";
 import eventoRoutes from "./routes/evento_router.js";
 import pdfRoutes from "./routes/facture_router.js";
+import adminFacture from "./routes/adminFacture_router.js";
 import admRoutes from "./routes/admin_routes.js";
-
+import chartRouter from './routes/chart_router.js';
 // Importando a conexão com o banco de dados
 import connection from "./Database/database.js";
 
@@ -66,12 +66,12 @@ app.use(cors());
 app.use("/", publicRoutes);
 app.use("/", itemRoutes);
 app.use("/", pacote_routes);
-app.use("/", funcaoRoutes);
 app.use("/", utilizadorRoutes);
 app.use("/", eventoRoutes);
 app.use("/", pdfRoutes);
+app.use("/", adminFacture);
 app.use("/", admRoutes);
-
+app.use('/', chartRouter);
 // Iniciando o servidor
 app.listen(port, () => {
     console.log("API rodando na porta " + port);

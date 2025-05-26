@@ -94,21 +94,21 @@
                 <h4 class="text-section">Gerenciamento</h4>
               </li>
               <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarLayouts">
+                <a href="/eventos">
                   <i class="fas fa-check-circle"></i>
                   <p>Reservas</p>
                   <span class=""></span>
                 </a>
               </li>
               <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarLayouts">
+                <a href="/admin-pacotes">
                   <i class="fas fa-th-list"></i>
                   <p>Pacotes</p>
                   <span class=""></span>
                 </a>
               </li>
               <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#forms">
+                <a href="/admin-menu">
                   <i class="fas fa-pen-square"></i>
                   <p>Cardapio</p>
                   <span class=""></span>
@@ -427,27 +427,34 @@
                     </div>
                     <div class="card-list py-4">
                       <div class="item-list">
-                        <% recentes.slice(0, 3).forEach(evento => { %>
-                          <div class="d-flex align-items-center mb-3">
-                            <!-- Avatar -->
-                            <div class="avatar">
-                              <span class="avatar-title rounded-circle border border-white">
-                                <%= evento.solicitante.charAt(0) + evento.solicitante.split(' ').pop().charAt(0) %>
-                              </span>
+                        <% if (recentes.length > 0) {%>
+                          <% recentes.slice(0, 3).forEach(evento => { %>
+                            <div class="d-flex align-items-center mb-3">
+                              <!-- Avatar -->
+                              <div class="avatar">
+                                <span class="avatar-title rounded-circle border border-white">
+                                  <%= evento.solicitante.charAt(0) + evento.solicitante.split(' ').pop().charAt(0) %>
+                                </span>
+                              </div>
+                              
+                              <!-- Informações do evento -->
+                              <div class="info-user ms-3">
+                                <div class="username">
+                                  <%= evento.solicitante %>
+                                </div>
+                                <div class="status">
+                                  <%= evento.nome %> | Pacote: <%=evento.preco .toLocaleString('pt-BR').replace(/,/g, ',') %>
+                                </div>
+                              </div>
                             </div>
-                            
-                            <!-- Informações do evento -->
+                          <% }) %>
+                        <% } else { %>
                             <div class="info-user ms-3">
-                              <div class="username">
-                                <%= evento.solicitante %>
+                                <div class="username">
+                                   Nenhuma Solicitação encontrada!
+                                </div>
                               </div>
-                              <div class="status">
-                                <%= evento.nome %> | Pacote: <%=evento.preco .toLocaleString('pt-BR').replace(/,/g, ',') %>
-                              </div>
-                            </div>
-                          </div>
-                        <% }) %>
-
+                         <% } %> 
                       </div>
                     </div>
                   </div>
@@ -470,25 +477,33 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <% confirmadosMes.forEach(evento => { %> 
-                              
+                          <% if (confirmadosMes.length > 0) {%>
+                            <% confirmadosMes.forEach(evento => { %> 
+                                
+                              <tr>
+                                <th scope="row">
+                                  <button
+                                    class="btn btn-icon btn-round btn-success btn-sm me-2"
+                                  >
+                                    <i class="fa fa-check"></i>
+                                  </button>
+                                  <%= evento.event %> de <%= evento.solicitante %>
+                                </th>
+                                <% let data %>
+                                <% data = evento.dataRealizacao %>
+                                <td class="text-end"><%= new Date(data).toLocaleDateString('pt-BR') %>, <%= evento.horario %></td>
+                                <td class="text-end"><%= evento.nomepac %></td>
+                                <td class="text-end">Kz <%=evento.preco.toLocaleString('pt-BR').replace(/,/g, ',') %></td>
+                                
+                              </tr>
+                            <% }) %>
+                          <% } else { %>
                             <tr>
-                              <th scope="row">
-                                <button
-                                  class="btn btn-icon btn-round btn-success btn-sm me-2"
-                                >
-                                  <i class="fa fa-check"></i>
-                                </button>
-                                <%= evento.event %> de <%= evento.solicitante %>
-                              </th>
-                              <% let data %>
-                              <% data = evento.dataRealizacao %>
-                              <td class="text-end"><%= new Date(data).toLocaleDateString('pt-BR') %>, <%= evento.horario %></td>
-                              <td class="text-end"><%= evento.nomepac %></td>
-                              <td class="text-end">Kz <%=evento.preco.toLocaleString('pt-BR').replace(/,/g, ',') %></td>
-                              
-                            </tr>
-                          <% }) %>
+                                <th scope="row" colspan="4">
+                                  Nenhum evento encontrado!
+                                </th> 
+                              </tr>
+                          <% } %> 
                         </tbody>
                       </table>
                     </div>

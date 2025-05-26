@@ -1,7 +1,13 @@
-import connection from '../Database/database.js';
+
 import express from 'express';
 import session from 'express-session';
-
+import mysql from 'mysql2';
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "dbeventos",
+});
 // Configurar sessão
 const app = express();
 app.use(session({
