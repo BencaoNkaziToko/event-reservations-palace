@@ -16,6 +16,7 @@ import pdfRoutes from "./routes/facture_router.js";
 import adminFacture from "./routes/adminFacture_router.js";
 import admRoutes from "./routes/admin_routes.js";
 import chartRouter from './routes/chart_router.js';
+import authRoutes from './routes/auth_routes.js';
 // Importando a conexão com o banco de dados
 import connection from "./Database/database.js";
 
@@ -56,6 +57,10 @@ app.use(
         secret: "seuSegredoAqui",
         resave: false,
         saveUninitialized: true,
+        cookie: {
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 24 * 60 * 60 * 1000 // 24 horas
+        }
     })
 );
 
@@ -72,6 +77,8 @@ app.use("/", pdfRoutes);
 app.use("/", adminFacture);
 app.use("/", admRoutes);
 app.use('/', chartRouter);
+app.use('/', authRoutes);
+
 // Iniciando o servidor
 app.listen(port, () => {
     console.log("API rodando na porta " + port);

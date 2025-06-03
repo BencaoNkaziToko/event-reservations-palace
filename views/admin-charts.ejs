@@ -287,17 +287,17 @@
           const statusCtx = document.getElementById('reservasStatusChart')?.getContext('2d');
           if (statusCtx) {
             charts.status = new Chart(statusCtx, {
-              type: 'pie',
-              data: {
-                labels: ['Pendentes', 'Confirmadas', 'Canceladas'],
-                datasets: [{
-                  data: [
-                    data.reservasStatus.pendentes,
-                    data.reservasStatus.confirmadas,
-                    data.reservasStatus.canceladas
-                  ],
-                  backgroundColor: ['#ffc107', '#28a745', '#dc3545']
-                }]
+            type: 'pie',
+            data: {
+              labels: ['Pendentes', 'Confirmadas', 'Canceladas'],
+              datasets: [{
+                data: [
+                  data.reservasStatus.pendentes,
+                  data.reservasStatus.confirmadas,
+                  data.reservasStatus.canceladas
+                ],
+                backgroundColor: ['#ffc107', '#28a745', '#dc3545']
+              }]
               },
               options: {
                 responsive: true,
@@ -315,14 +315,14 @@
           if (periodoCtx) {
             charts.periodo = new Chart(periodoCtx, {
               type: 'line',
-              data: {
-                labels: data.reservasPeriodo.labels,
-                datasets: [{
-                  label: 'Número de Reservas',
-                  data: data.reservasPeriodo.valores,
-                  borderColor: '#2196f3',
-                  tension: 0.1
-                }]
+            data: {
+              labels: data.reservasPeriodo.labels,
+              datasets: [{
+                label: 'Número de Reservas',
+                data: data.reservasPeriodo.valores,
+                borderColor: '#2196f3',
+                tension: 0.1
+              }]
               },
               options: {
                 responsive: true,
@@ -340,14 +340,14 @@
           if (receitaCtx) {
             charts.receita = new Chart(receitaCtx, {
               type: 'line',
-              data: {
-                labels: data.receita.labels,
-                datasets: [{
-                  label: 'Receita (Kz)',
-                  data: data.receita.valores,
-                  borderColor: '#4caf50',
-                  tension: 0.1
-                }]
+            data: {
+              labels: data.receita.labels,
+              datasets: [{
+                label: 'Receita (Kz)',
+                data: data.receita.valores,
+                borderColor: '#4caf50',
+                tension: 0.1
+              }]
               },
               options: {
                 responsive: true,
@@ -364,17 +364,17 @@
           const pacotesCtx = document.getElementById('pacotesPopularesChart')?.getContext('2d');
           if (pacotesCtx) {
             charts.pacotes = new Chart(pacotesCtx, {
-              type: 'bar',
-              data: {
-                labels: data.pacotesPopulares.labels,
-                datasets: [{
-                  label: 'Número de Reservas',
-                  data: data.pacotesPopulares.valores,
-                  backgroundColor: '#2196f3'
-                }]
-              },
-              options: {
-                responsive: true,
+            type: 'bar',
+            data: {
+              labels: data.pacotesPopulares.labels,
+              datasets: [{
+                label: 'Número de Reservas',
+                data: data.pacotesPopulares.valores,
+                backgroundColor: '#2196f3'
+              }]
+            },
+            options: {
+              responsive: true,
                 plugins: {
                   legend: {
                     position: 'top'
@@ -412,17 +412,17 @@
           const receitaPacotesCtx = document.getElementById('receitaPacotesChart')?.getContext('2d');
           if (receitaPacotesCtx) {
             charts.receitaPacotes = new Chart(receitaPacotesCtx, {
-              type: 'bar',
-              data: {
-                labels: data.receitaPacotes.labels,
-                datasets: [{
-                  label: 'Receita (Kz)',
-                  data: data.receitaPacotes.valores,
-                  backgroundColor: '#4caf50'
-                }]
-              },
-              options: {
-                responsive: true,
+            type: 'bar',
+            data: {
+              labels: data.receitaPacotes.labels,
+              datasets: [{
+                label: 'Receita (Kz)',
+                data: data.receitaPacotes.valores,
+                backgroundColor: '#4caf50'
+              }]
+            },
+            options: {
+              responsive: true,
                 plugins: {
                   legend: {
                     position: 'top'
@@ -437,17 +437,17 @@
           if (mediaValorCtx) {
             charts.mediaValor = new Chart(mediaValorCtx, {
               type: 'line',
-              data: {
+            data: {
                 labels: data.mediaValor.labels,
-                datasets: [{
+              datasets: [{
                   label: 'Média (Kz)',
                   data: data.mediaValor.valores,
                   borderColor: '#9c27b0',
                   tension: 0.1
-                }]
-              },
-              options: {
-                responsive: true,
+              }]
+            },
+            options: {
+              responsive: true,
                 plugins: {
                   legend: {
                     position: 'top'
@@ -461,20 +461,20 @@
           const distribuicaoHorariosCtx = document.getElementById('distribuicaoHorariosChart')?.getContext('2d');
           if (distribuicaoHorariosCtx) {
             charts.distribuicaoHorarios = new Chart(distribuicaoHorariosCtx, {
-              type: 'doughnut',
-              data: {
-                labels: data.distribuicaoHorarios.labels,
-                datasets: [{
-                  data: data.distribuicaoHorarios.valores,
-                  backgroundColor: [
-                    '#2196f3',
-                    '#4caf50',
+            type: 'doughnut',
+            data: {
+              labels: data.distribuicaoHorarios.labels,
+              datasets: [{
+                data: data.distribuicaoHorarios.valores,
+                backgroundColor: [
+                  '#2196f3',
+                  '#4caf50',
                     '#ff9800'
-                  ]
-                }]
-              },
-              options: {
-                responsive: true,
+                ]
+              }]
+            },
+            options: {
+              responsive: true,
                 plugins: {
                   legend: {
                     position: 'top'

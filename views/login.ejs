@@ -49,6 +49,19 @@
         footer {
             background: rgba(0, 0, 0, 0.2);
         }
+        .nav-tabs {
+            border-bottom: none;
+        }
+        .nav-tabs .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            padding: 10px 20px;
+        }
+        .nav-tabs .nav-link.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -60,29 +73,70 @@
                 </div>
                 <div class="col-md-5">
                     <div class="login-container">
-                        <form id="loginForm">
-                            <div class="text-center mb-4">
-                                <h3 class="fw-bold">Login</h3>
+                        <ul class="nav nav-tabs mb-4" id="authTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">Login</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab">Registro</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="authTabsContent">
+                            <!-- Login Form -->
+                            <div class="tab-pane fade show active" id="login" role="tabpanel">
+                                <form id="loginForm">
+                                    <div class="mb-3">
+                                        <label for="loginUsername" class="form-label">Nome de Usuário</label>
+                                        <input type="text" id="loginUsername" class="form-control" required>
+                                        <div class="error" id="loginUsernameError"></div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="loginPassword" class="form-label">Senha</label>
+                                        <input type="password" id="loginPassword" class="form-control" required>
+                                        <div class="error" id="loginPasswordError"></div>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Entrar</button>
+                                    </div>
+                                </form>
                             </div>
-                            
-                            <!-- Email Input -->
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" id="email" class="form-control" placeholder="Digite seu email">
-                                <div class="error" id="emailError">Por favor, insira um email válido.</div>
+
+                            <!-- Register Form -->
+                            <div class="tab-pane fade" id="register" role="tabpanel">
+                                <form id="registerForm">
+                                    <div class="mb-3">
+                                        <label for="registerName" class="form-label">Nome Completo</label>
+                                        <input type="text" id="registerName" class="form-control" required>
+                                        <div class="error" id="registerNameError"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="registerUsername" class="form-label">Nome de Usuário</label>
+                                        <input type="text" id="registerUsername" class="form-control" required>
+                                        <div class="error" id="registerUsernameError"></div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="registerPassword" class="form-label">Senha</label>
+                                        <input type="password" id="registerPassword" class="form-control" required>
+                                        <div class="error" id="registerPasswordError"></div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="confirmPassword" class="form-label">Confirmar Senha</label>
+                                        <input type="password" id="confirmPassword" class="form-control" required>
+                                        <div class="error" id="confirmPasswordError"></div>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Registrar</button>
+                                    </div>
+                                </form>
                             </div>
-                            
-                            <!-- Password Input -->
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Senha</label>
-                                <input type="password" id="password" class="form-control" placeholder="Digite sua senha">
-                                <div class="error" id="passwordError">A senha deve ter pelo menos 6 caracteres.</div>
-                            </div>
-                            
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Entrar</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,33 +152,95 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById("loginForm").addEventListener("submit", function(event) {
+        // Função para mostrar mensagens de erro
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        // Função para limpar erros
+        function clearErrors() {
+            document.querySelectorAll('.error').forEach(error => {
+                error.style.display = 'none';
+            });
+        }
+
+        // Login Form Handler
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-            let valid = true;
-            
-            const email = document.getElementById("email");
-            const emailError = document.getElementById("emailError");
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (!emailPattern.test(email.value)) {
-                emailError.style.display = "block";
-                valid = false;
-            } else {
-                emailError.style.display = "none";
+            clearErrors();
+
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nomeUtilizador: username, senha: password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    window.location.href = '/admin';
+                } else {
+                    showError('loginPasswordError', data.error || 'Erro ao fazer login');
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                showError('loginPasswordError', 'Erro ao fazer login. Tente novamente.');
             }
-            
-            const password = document.getElementById("password");
-            const passwordError = document.getElementById("passwordError");
-            
-            if (password.value.length < 6) {
-                passwordError.style.display = "block";
-                valid = false;
-            } else {
-                passwordError.style.display = "none";
+        });
+
+        // Register Form Handler
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const name = document.getElementById('registerName').value;
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validações
+            if (password !== confirmPassword) {
+                showError('confirmPasswordError', 'As senhas não coincidem');
+                return;
             }
-            
-            if (valid) {
-                alert("Login bem-sucedido!");
+
+            if (password.length < 6) {
+                showError('registerPasswordError', 'A senha deve ter pelo menos 6 caracteres');
+                return;
+            }
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nome: name,
+                        nomeUtilizador: username,
+                        senha: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Mudar para a aba de login após registro bem-sucedido
+                    document.getElementById('login-tab').click();
+                    alert('Registro realizado com sucesso! Faça login para continuar.');
+                } else {
+                    showError('registerUsernameError', data.error);
+                }
+            } catch (error) {
+                showError('registerUsernameError', 'Erro ao registrar. Tente novamente.');
             }
         });
     </script>

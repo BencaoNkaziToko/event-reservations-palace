@@ -54,8 +54,8 @@ export const dashboard = async(req, res)=>{
                                             totalFormatadoMensal,
                                             totalFormatadoAnual,
                                             recentes,
-                                            confirmadosMes
-                                            
+                                            confirmadosMes,
+                                            user: req.session.user
                                         })
                                     })
                                 })
@@ -68,6 +68,29 @@ export const dashboard = async(req, res)=>{
     });
 }
 
+export const reservations = async(req, res) => {
+    // Lógica para a página de reservas
+    res.render("admin-reservations", {
+        title: "Reservas",
+        user: req.session.user
+    });
+}
+
+export const items = async(req, res) => {
+    // Lógica para a página de itens
+    res.render("admin-items", {
+        title: "Itens",
+        user: req.session.user
+    });
+}
+
+export const charts = async(req, res) => {
+    // Lógica para a página de gráficos
+    res.render("admin-charts", {
+        title: "Gráficos",
+        user: req.session.user
+    });
+}
 
 //login
 export const login = (req, res) => {

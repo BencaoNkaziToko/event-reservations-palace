@@ -1,13 +1,17 @@
-const express = require('express')
+import express from 'express'
+import { dashboard, reservations, items, charts, login } from '../controllers/admin_controller.js'
+import { isAuthenticated } from '../middleware/auth.js'
+
 const router = express.Router()
-const admController = require('../controllers/admin_controller')
 
+// Rota de login (página)
+router.get('/login', login)
 
+// Rotas protegidas
+router.get('/admin', isAuthenticated, dashboard)
+router.get('/admin-reservations', isAuthenticated, reservations)
+router.get('/admin-items', isAuthenticated, items)
+router.get('/admin-charts', isAuthenticated, charts)
 
-
-router.get('/admin', admController.dashboard)
-router.get('/login', admController.login)
-
-
-module.exports = router;
+export default router;
 

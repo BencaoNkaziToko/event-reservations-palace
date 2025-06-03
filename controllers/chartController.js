@@ -11,7 +11,7 @@ const pool = mysql.createPool({
 export async function getChartData(req, res) {
     try {
         console.log('Iniciando getChartData');
-        
+
         // 1. Status das Reservas
         const [statusResult] = await pool.query(`
             SELECT 
